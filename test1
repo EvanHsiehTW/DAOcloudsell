@@ -33,8 +33,8 @@ contract Crowdsale {
         //uint etherCostOfEachToken
         //address addressOfTokenUsedAsReward
     ) public{
-        beneficiary = /*ifSuccessfulSendTo*/ 0xB758131F09b8305a90e53F64Abb6717aF18f07C0;
-        fundingGoal = 5;//fundingGoalInEthers * 1 ether;
+        beneficiary = 0xB758131F09b8305a90e53F64Abb6717aF18f07C0;
+        fundingGoal = 5 /*fundingGoalInEthers*/ * 1 ether;
         deadline = now +5 minutes;// durationInMinutes * 1 minutes;
         price = 1 * 0.1 ether; //etherCostOfEachToken * 0.1 ether;
         tokenReward = token(0x5c544D4899876806b2958ab56e1952e1848df534);
