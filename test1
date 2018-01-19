@@ -13,10 +13,11 @@ contract Crowdsale {
     uint public price;
     
     token public tokenReward;
-    uint public balance= this.balance();
+    uint public balance;
     mapping(address => uint256) public balanceOf;
     bool fundingGoalReached = false;
     bool crowdsaleClosed = false;
+    address myAddress = this;
 
     event GoalReached(address recipient, uint totalAmountRaised);
     event FundTransfer(address backer, uint amount, bool isContribution);
@@ -38,6 +39,7 @@ contract Crowdsale {
         deadline = now +5 minutes;// durationInMinutes * 1 minutes;
         price = 1 * 0.1 ether; //etherCostOfEachToken * 0.1 ether;
         tokenReward = token(0x5c544D4899876806b2958ab56e1952e1848df534);
+        balance= myAddress.balance;
     }
 
     /**
