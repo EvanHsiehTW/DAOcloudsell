@@ -98,7 +98,7 @@ contract Crowdsale is owned {
        
         
         
-        defaultTokenAddress = 0x846026b288735edb74f1bde6b079267cd0d51b9a;
+        defaultTokenAddress = 0x5c544D4899876806b2958ab56e1952e1848df534;
         
        if(_tokenContract!=0x0) {
            tokenContract=_tokenContract;
