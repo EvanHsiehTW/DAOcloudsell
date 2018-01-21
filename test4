@@ -2,16 +2,48 @@
 pragma solidity ^0.4.16;
 
 interface token {
-    function transfer(address receiver, uint amount)public;
+
+    function transfer (address receiver, uint amount)public ;
+    
     
 }
 
-contract Crowdsale {
+contract owned {
+    address public owner;
+
+    function owned() public {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function transferOwnership(address newOwner) onlyOwner public {
+        owner = newOwner;
+    }
+}
+
+
+contract Token is owned{
     
+    function transferToken(address _to, uint _value) returns (bool success);
+    function balanceOf(address _owner) constant returns (uint balance);
+    
+}
+
+
+
+
+
+
+
+contract Crowdsale is owned {
     uint256 public thisBalance;
     
     
-    
+    uint256 public tokenBalance;
     address public beneficiary;
     
     uint public fundingGoal;
@@ -40,14 +72,14 @@ contract Crowdsale {
      *
      * Setup the owner
      */
-    function Crowdsale(
+    function Crowdsale (
         //address ifSuccessfulSendTo
         //uint fundingGoalInEthers,
         //uint durationInMinutes
         //uint etherCostOfEachToken
         //address addressOfTokenUsedAsReward
          
-    ) public  payable{
+    )payable public  {
         beneficiary = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
         fundingGoal = 5 /*fundingGoalInEthers*/ * 1 ether;
         deadline = now +5 minutes;// durationInMinutes * 1 minutes;
@@ -65,13 +97,15 @@ contract Crowdsale {
      *
      * The function without name is the default function that is called whenever anyone sends funds to a contract
      */
-    function () payable public{
-        require(!crowdsaleClosed);
+    function ()payable{
+     
+      require(!crowdsaleClosed);
         uint amount = msg.value;
         balanceOf[msg.sender] += amount;
         amountRaised += amount;
         tokenReward.transfer(msg.sender, amount / price);
         FundTransfer(beneficiary, amount, false);
+    
     }
 
 function checkAddress()public view returns(address _thisAddress){
@@ -87,6 +121,12 @@ function checkAddress()public view returns(address _thisAddress){
     }
 
 
+    function checkOuterBalance(address outer)public view returns(uint256 _thisBalance){
+        
+       return outer.balance;
+        
+    }
+    
     function checkBalance()public view returns(uint256 _thisBalance){
         
        return this.balance;
@@ -130,17 +170,29 @@ function checkTokenRewardBalance()public view returns(uint256 amountTokenBalance
     }
 
 
-    /**
-     * Withdraw the funds
-     *
-     * Checks to see if goal or time limit has been reached, and if so, and the funding goal was reached,
-     * sends the entire amount to the beneficiary. If goal was not reached, each contributor can withdraw
-     * the amount they contributed.
-     */
-    function safeWithdrawal() public{
-        
+   
+    function safeWithdrawal() external onlyOwner{
+        //if(this.balance>=1 ether){
         beneficiary.transfer(this.balance);
-        tokenReward.transfer(beneficiary, this.balance);
+
+
+       
     }
+    
+    function withdrawTokens(address tokenContract) external onlyOwner {
+    Token tc = Token(tokenContract);
+
+    tc.transferToken(owner, tc.balanceOf(this));
+}
+ 
+ function chkTokenBllance(address tokenContract) public onlyOwner {
+    Token tc = Token(tokenContract);
+
+    tokenBalance=tc.balanceOf(this);
+    
+}   
+    
+    
+    
 }
 
