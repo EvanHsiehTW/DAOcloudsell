@@ -1,0 +1,94 @@
+pragma solidity ^0.4.16;
+
+contract owned {
+    address public owner;
+
+    function owned() public {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function transferOwnership(address newOwner) onlyOwner public {
+        owner = newOwner;
+    }
+}
+
+
+
+contract token{
+
+    function transfer(address _to, uint _value) returns (bool success);
+    function balanceOf(address _owner) constant returns (uint balance);
+    
+
+}
+
+contract chkTokenBalance is owned{
+
+
+
+mapping (address => uint256) public balanceOf;
+
+
+token tc ;
+
+address tokenContract;
+
+uint256 public tokenBalance;
+
+
+
+address defaultAddress =0x846026b288735edb74f1bde6b079267cd0d51b9a;
+
+
+
+
+
+function chkTokenBalance(address _tokenContract) public {
+       
+        if(_tokenContract!=0x0)
+        tokenContract=_tokenContract;
+        
+        tokenContract = defaultAddress;
+        
+        tc = token(tokenContract);
+    
+        tokenBalance = tc.balanceOf(this);
+    }
+    
+    
+    
+    
+    
+function refreshTokenBalance() public{
+    
+    tokenBalance = tc.balanceOf(this);
+    
+}
+
+
+
+
+
+
+function withdrawTokens() onlyOwner public {
+    
+    
+    tc.transfer(owner, tc.balanceOf(this));
+    
+    tokenBalance = tc.balanceOf(this);
+    
+}
+
+
+
+
+
+
+}
+
+
