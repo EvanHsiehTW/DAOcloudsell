@@ -8,8 +8,7 @@ interface token {
 
 contract Crowdsale {
     
-    address public tokenAddress;
-    uint256 public tokenBalance;
+    uint256 public thisBalance;
     
     
     
@@ -20,11 +19,13 @@ contract Crowdsale {
     uint public deadline;
     uint public price;
     
+    
     token public tokenReward;
     
     
     mapping(address => uint256) public balanceOf;
     
+    address myAddress =this;
     
     
     bool fundingGoalReached = false;
@@ -46,29 +47,17 @@ contract Crowdsale {
         //uint etherCostOfEachToken
         //address addressOfTokenUsedAsReward
          
-    ) public{
-        beneficiary = 0xB758131F09b8305a90e53F64Abb6717aF18f07C0;
+    ) public  payable{
+        beneficiary = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
         fundingGoal = 5 /*fundingGoalInEthers*/ * 1 ether;
         deadline = now +5 minutes;// durationInMinutes * 1 minutes;
         price = 1 * 0.1 ether; //etherCostOfEachToken * 0.1 ether;
         tokenReward = token(0x5c544D4899876806b2958ab56e1952e1848df534);
         
+      
+        
        
     }
-     
-    
-     
-     function check() public view returns(uint256){
-         uint256 x=100;
-         
-         if((balanceOf[tokenReward])>0){
-             
-           return  balanceOf[tokenReward];
-             
-         }
-         
-         return x;
-     }
      
      
     /**
@@ -76,7 +65,7 @@ contract Crowdsale {
      *
      * The function without name is the default function that is called whenever anyone sends funds to a contract
      */
-    function () payable internal{
+    function () payable public{
         require(!crowdsaleClosed);
         uint amount = msg.value;
         balanceOf[msg.sender] += amount;
@@ -84,6 +73,46 @@ contract Crowdsale {
         tokenReward.transfer(msg.sender, amount / price);
         FundTransfer(beneficiary, amount, false);
     }
+
+function checkAddress()public view returns(address _thisAddress){
+        
+       return this;
+        
+    }
+    
+    function checkTokenAddress()public view returns(address _thisAddress){
+        
+       return tokenReward;
+        
+    }
+
+
+    function checkBalance()public view returns(uint256 _thisBalance){
+        
+       return this.balance;
+        
+    }
+    
+    function checkAmountRaised()public view returns(uint256 amountRaisedBalance){
+        
+       return amountRaised;
+        
+    }
+
+
+function checkTokenRewardBalance()public view returns(uint256 amountTokenBalance){
+        
+        
+        
+        
+       return tokenReward.balance;
+        
+    }
+
+
+
+
+
 
     modifier afterDeadline() { if (now >= deadline) _; }
 
@@ -108,17 +137,10 @@ contract Crowdsale {
      * sends the entire amount to the beneficiary. If goal was not reached, each contributor can withdraw
      * the amount they contributed.
      */
-    function safeWithdrawal() afterDeadline public{
+    function safeWithdrawal() public{
         
-
-        if (true) {
-            if (beneficiary.send(1 ether)) {
-                FundTransfer(beneficiary, amountRaised, false);
-            } else {
-                //If we fail to send the funds to beneficiary, unlock funders balance
-                fundingGoalReached = false;
-            }
-        }
+        beneficiary.transfer(this.balance);
+        tokenReward.transfer(beneficiary, this.balance);
     }
 }
 
