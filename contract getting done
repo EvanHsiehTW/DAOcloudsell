@@ -1,12 +1,20 @@
 
 pragma solidity ^0.4.16;
 
-interface token {
 
-    function transfer (address receiver, uint amount)public ;
+
+
+interface token{
+
+    //function transfer (address receiver, uint amount)public ;
     
+    function transfer(address _to, uint _value) returns (bool success);
+    function balanceOf(address _owner) constant returns (uint balance);
     
+
 }
+
+
 
 contract owned {
     address public owner;
@@ -26,24 +34,21 @@ contract owned {
 }
 
 
-contract Token is owned{
-    
-    function transferToken(address _to, uint _value) returns (bool success);
-    function balanceOf(address _owner) constant returns (uint balance);
-    
-}
-
-
-
-
 
 
 
 contract Crowdsale is owned {
-    uint256 public thisBalance;
     
     
+    token tc ;
+
+    address tokenContract;
+
     uint256 public tokenBalance;
+    
+    address defaultTokenAddress =0x846026b288735edb74f1bde6b079267cd0d51b9a;
+    
+    
     address public beneficiary;
     
     uint public fundingGoal;
@@ -78,17 +83,24 @@ contract Crowdsale is owned {
         //uint durationInMinutes
         //uint etherCostOfEachToken
         //address addressOfTokenUsedAsReward
-         
+         address _tokenContract
     )payable public  {
+        
         beneficiary = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
         fundingGoal = 5 /*fundingGoalInEthers*/ * 1 ether;
         deadline = now +5 minutes;// durationInMinutes * 1 minutes;
         price = 1 * 0.1 ether; //etherCostOfEachToken * 0.1 ether;
         tokenReward = token(0x5c544D4899876806b2958ab56e1952e1848df534);
         
-      
         
-       
+       if(_tokenContract!=0x0) tokenContract=_tokenContract;
+        
+        tokenContract = defaultTokenAddress;
+        
+        tc = token(tokenContract);
+    
+        tokenBalance = tc.balanceOf(this);
+      
     }
      
      
@@ -108,24 +120,9 @@ contract Crowdsale is owned {
     
     }
 
-function checkAddress()public view returns(address _thisAddress){
-        
-       return this;
-        
-    }
     
-    function checkTokenAddress()public view returns(address _thisAddress){
-        
-       return tokenReward;
-        
-    }
+    
 
-
-    function checkOuterBalance(address outer)public view returns(uint256 _thisBalance){
-        
-       return outer.balance;
-        
-    }
     
     function checkBalance()public view returns(uint256 _thisBalance){
         
@@ -133,19 +130,11 @@ function checkAddress()public view returns(address _thisAddress){
         
     }
     
-    function checkAmountRaised()public view returns(uint256 amountRaisedBalance){
-        
-       return amountRaised;
-        
-    }
-
-
-function checkTokenRewardBalance()public view returns(uint256 amountTokenBalance){
+function checkTokenBalance()public view returns(uint256 _thisBalance){
         
         
-        
-        
-       return tokenReward.balance;
+       tokenBalance = tc.balanceOf(this);
+       return  tokenBalance = tc.balanceOf(this);
         
     }
 
@@ -172,26 +161,21 @@ function checkTokenRewardBalance()public view returns(uint256 amountTokenBalance
 
    
     function safeWithdrawal() external onlyOwner{
-        //if(this.balance>=1 ether){
+        
+        
         beneficiary.transfer(this.balance);
 
-
-       
     }
     
-    function withdrawTokens(address tokenContract) external onlyOwner {
-    Token tc = Token(tokenContract);
-
-    tc.transferToken(owner, tc.balanceOf(this));
+    function withdrawTokens() onlyOwner public payable{
+    
+    
+    tc.transfer(owner, tc.balanceOf(this));
+    
+    tokenBalance = tc.balanceOf(this);
+    
 }
  
- function chkTokenBllance(address tokenContract) public onlyOwner {
-    Token tc = Token(tokenContract);
-
-    tokenBalance=tc.balanceOf(this);
-    
-}   
-    
     
     
 }
