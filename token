@@ -210,7 +210,7 @@ contract StandardToken is  BasicToken ,owned{
 
 
 
-contract StateOfTaiwanToken is StandardToken{
+contract StateofTaiwanToken is StandardToken{
     string public name;
     string public symbol;
     uint256 public totalSupply;
@@ -228,7 +228,7 @@ contract StateOfTaiwanToken is StandardToken{
     
     
 
-function StateOfTaiwanToken() public onlyOwner{
+function StateofTaiwanToken() public onlyOwner{
         totalSupply = (189500000000 *10**uint256(decimals));  // Update total supply with the decimal amount
         balances[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = "TaiwanIsaCountry";                                   // Set the name for display purposes
