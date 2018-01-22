@@ -264,7 +264,7 @@ function StraysFund() public onlyOwner{
         totalSupply = (750000000 *100);  // Update total supply with the decimal amount
         balances[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = "Strays";                                   // Set the name for display purposes
-        symbol = "cat";                               // Set the symbol for display purposes
+        symbol = "Cat";                               // Set the symbol for display purposes
        
         
     }
