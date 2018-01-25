@@ -232,7 +232,7 @@ function StateofTaiwanToken() public onlyOwner{
         totalSupply = (189500000000 *10**uint256(decimals));  // Update total supply with the decimal amount
         balances[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = "TaiwanIsaCountry";                                   // Set the name for display purposes
-        symbol = "TOK";                               // Set the symbol for display purposes
+        symbol = "TN1";                               // Set the symbol for display purposes
        
         
     }
